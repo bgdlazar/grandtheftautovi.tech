@@ -8,6 +8,8 @@ backend:
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
 
+show_preview_links: false
+
 collections:
   - name: "blog"
     label: "Articole Blog"
