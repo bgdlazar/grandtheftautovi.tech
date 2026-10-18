@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GTA VI - Vice City Wire (Blog)</title>
+
+  <link rel="icon" type="image/png" href="favicon.png?v=3">
+  <link rel="shortcut icon" type="image/png" href="favicon.png?v=3">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=Montserrat:wght@400;600;800;900&family=Orbitron:wght@800;900&display=swap" rel="stylesheet">
+
+  <!-- Parser pentru fișiere Markdown -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <style>
+    :root {
+      --neon-pink: #ff2d87;
+      --neon-cyan: #00e5ff;
+      --card-bg: rgba(18, 12, 38, 0.65);
+      --border-glow: rgba(255, 255, 255, 0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #0c0817;
+      color: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      padding-bottom: 60px;
+    }
+
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        radial-gradient(ellipse at center, rgba(12, 8, 23, 0.2) 0%, rgba(12, 8, 23, 0.75) 100%),
+        url('cocoteo-background.0~6dq9w0~ac7f.avif'),
+        url('https://i.ibb.co/G4NHb1st/cocoteo-background-0-6dq9w0-ac7f.avif');
+      background-size: cover;
+      background-position: center;
+      z-index: -2;
+      filter: saturate(1.15) contrast(1.05);
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+      background-size: 100% 4px;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.45;
+    }
+
+    header {
+      width: 100%;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 26px 20px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 5;
+    }
+
+    .site-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      background: linear-gradient(180deg, #ffffff 40%, #ffc4e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 15px rgba(255, 45, 135, 0.4);
+    }
+
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      color: #00e5ff;
+      text-decoration: none;
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      backdrop-filter: blur(10px);
+      transition: all 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: rgba(0, 229, 255, 0.2);
+      box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+    }
+
+    main {
+      width: 100%;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 10px 20px;
+      z-index: 5;
+      position: relative;
+    }
+
+    .posts-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .post-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--border-glow);
+      border-radius: 18px;
+      padding: 26px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #ff2d87, #c054ff, #00e5ff);
+    }
+
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 10px;
+    }
+
+    .post-title {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 1px;
+    }
+
+    .post-date {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--neon-cyan);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .post-body {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #e5e0f5;
+      margin-bottom: 16px;
+    }
+
+    .post-body p { margin-bottom: 12px; }
+    .post-body a { color: var(--neon-cyan); }
+    .post-body img { max-width: 100%; border-radius: 8px; margin: 10px 0; }
+
+    .post-img-container {
+      width: 100%;
+      max-height: 480px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: #000;
+      margin-bottom: 16px;
+    }
+
+    .post-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 50px 20px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-layer"></div>
+  <div class="scanlines"></div>
+
+  <header>
+    <div class="site-title">VICE WIRE // FEED</div>
+    <a href="index.html" class="nav-btn">⏱️ Countdown</a>
+  </header>
+
+  <main>
+    <div class="posts-feed" id="postsContainer">
+      <div class="empty-state">Se încarcă noutățile din Vice City...</div>
+    </div>
+  </main>
+
+  <script>
+    const USER = "bgdlazar";
+    const REPO = "grandtheftautovi.tech";
+
+    function parseFrontmatter(text) {
+      const match = text.match(/^---([\s\S]*?)---([\s\S]*)$/);
+      if (!match) return { data: {}, content: text };
+
+      const lines = match[1].split("\n");
+      const data = {};
+      lines.forEach(line => {
+        const parts = line.split(":");
+        if (parts.length >= 2) {
+          const key = parts[0].trim();
+          let value = parts.slice(1).join(":").trim();
+          if (value.startsWith('"') && value.endsWith('"')) {
+            value = value.slice(1, -1);
+          }
+          data[key] = value;
+        }
+      });
+
+      return { data, content: match[2].trim() };
+    }
+
+    async function loadPosts() {
+      const container = document.getElementById("postsContainer");
+      try {
+        const res = await fetch(`https://api.github.com/repos/${USER}/${REPO}/contents/content/posts`);
+        if (!res.ok) {
+          container.innerHTML = '<div class="empty-state">Nu a fost publicat niciun articol încă. Publică primul articol din panoul admin!</div>';
+          return;
+        }
+
+        const files = await res.json();
+        const postPromises = files
+          .filter(file => file.name.endsWith(".md"))
+          .map(async file => {
+            const rawRes = await fetch(file.download_url);
+            const rawText = await rawRes.text();
+            const { data, content } = parseFrontmatter(rawText);
+            return {
+              title: data.title || file.name.replace(".md", ""),
+              date: data.date ? new Date(data.date).toLocaleDateString("ro-RO", { day: "2-digit", month: "short", year: "numeric" }) : "",
+              rawDate: data.date ? new Date(data.date).getTime() : 0,
+              image: data.image || null,
+              content: marked.parse(content)
+            };
+          });
+
+        const posts = await Promise.all(postPromises);
+        posts.sort((a, b) => b.rawDate - a.rawDate);
+
+        if (posts.length === 0) {
+          container.innerHTML = '<div class="empty-state">Nu a fost publicat niciun articol încă.</div>';
+          return;
+        }
+
+        container.innerHTML = posts.map(post => `
+          <article class="post-card">
+            <div class="post-header">
+              <h2 class="post-title">${post.title}</h2>
+              <span class="post-date">${post.date}</span>
+            </div>
+
+            ${post.image ? `
+              <div class="post-img-container">
+                <img src="${post.image}" alt="Post Image" class="post-img">
+              </div>
+            ` : ""}
+
+            <div class="post-body">${post.content}</div>
+          </article>
+        `).join("");
+      } catch (err) {
+        container.innerHTML = '<div class="empty-state">Eroare la preluarea articolelor din feed.</div>';
+      }
+    }
+
+    loadPosts();
+  </script>
+</body>
+</html>
