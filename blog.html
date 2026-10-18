@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GTA VI - Blogul Romanesc</title>
+  <title>GTA VI - Vice City Wire (Blog)</title>
 
   <link rel="icon" type="image/png" href="favicon.png?v=3">
   <link rel="shortcut icon" type="image/png" href="favicon.png?v=3">
@@ -79,6 +79,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-shadow: 0 0 15px rgba(255, 45, 135, 0.4);
+      text-decoration: none;
     }
 
     .nav-btn {
@@ -118,6 +119,7 @@
       gap: 24px;
     }
 
+    /* Card Articol */
     .post-card {
       background: var(--card-bg);
       backdrop-filter: blur(18px);
@@ -128,6 +130,9 @@
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
       position: relative;
       overflow: hidden;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+      display: flex;
+      flex-direction: column;
     }
 
     .post-card::before {
@@ -137,6 +142,13 @@
       background: linear-gradient(90deg, #ff2d87, #c054ff, #00e5ff);
     }
 
+    /* Efect de hover pe card în feed */
+    .post-card.clickable-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0, 229, 255, 0.6);
+      box-shadow: 0 12px 35px rgba(0, 229, 255, 0.25);
+    }
+
     .post-header {
       display: flex;
       justify-content: space-between;
@@ -144,14 +156,25 @@
       margin-bottom: 14px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       padding-bottom: 10px;
+      gap: 12px;
+    }
+
+    .post-title-link {
+      text-decoration: none;
+      color: inherit;
     }
 
     .post-title {
       font-family: 'Chakra Petch', sans-serif;
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 700;
       color: #ffffff;
       letter-spacing: 1px;
+      transition: color 0.2s ease;
+    }
+
+    .post-card.clickable-card:hover .post-title {
+      color: var(--neon-cyan);
     }
 
     .post-date {
@@ -160,6 +183,7 @@
       color: var(--neon-cyan);
       letter-spacing: 1px;
       text-transform: uppercase;
+      white-space: nowrap;
     }
 
     .post-body {
@@ -191,6 +215,58 @@
       object-fit: cover;
     }
 
+    /* Buton Citește Articolul în alt tab */
+    .read-more-btn {
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 45, 135, 0.15);
+      border: 1px solid rgba(255, 45, 135, 0.5);
+      color: #ff94c2;
+      text-decoration: none;
+      padding: 7px 16px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+      margin-top: auto;
+    }
+
+    .read-more-btn:hover {
+      background: rgba(255, 45, 135, 0.35);
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(255, 45, 135, 0.5);
+      transform: translateX(4px);
+    }
+
+    /* Buton Înapoi când e deschis un singur articol */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(18, 12, 38, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      transition: all 0.2s ease;
+    }
+
+    .back-btn:hover {
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+      box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+    }
+
     .empty-state {
       text-align: center;
       padding: 50px 20px;
@@ -206,13 +282,14 @@
   <div class="scanlines"></div>
 
   <header>
-    <div class="site-title">GTA VI - Blogul Romanesc</div>
+    <a href="/" class="site-title">GTA VI - Blogul Romanesc</a>
     <a href="https://grandtheftautovi.tech" class="nav-btn">⏱️ Countdown</a>
   </header>
 
   <main>
+    <div id="backContainer"></div>
     <div class="posts-feed" id="postsContainer">
-      <div class="empty-state">Se încarcă noutățile din Vice City...</div>
+      <div class="empty-state">Se încarcă articolele...</div>
     </div>
   </main>
 
@@ -251,7 +328,20 @@
       return { data, content: match[2].trim() };
     }
 
-    async function loadPosts() {
+    async function initBlog() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const postSlug = urlParams.get("post");
+
+      if (postSlug) {
+        // Mod vizualizare: Un singur articol
+        loadSinglePost(postSlug);
+      } else {
+        // Mod vizualizare: Feed complet cu toate articolele
+        loadAllPosts();
+      }
+    }
+
+    async function loadAllPosts() {
       const container = document.getElementById("postsContainer");
       try {
         const res = await fetch(`https://api.github.com/repos/${USER}/${REPO}/contents/content/posts`);
@@ -269,11 +359,13 @@
             const { data, content } = parseFrontmatter(rawText);
 
             return {
+              slug: file.name.replace(".md", ""),
               title: data.title || file.name.replace(".md", ""),
               date: data.date ? new Date(data.date).toLocaleDateString("ro-RO", { day: "2-digit", month: "short", year: "numeric" }) : "",
               rawDate: data.date ? new Date(data.date).getTime() : 0,
               image: resolveImgUrl(data.image),
-              content: marked.parse(content)
+              // Previzualizare primelor 200 de caractere în feed
+              previewText: content.length > 220 ? content.slice(0, 220) + "..." : content
             };
           });
 
@@ -285,33 +377,95 @@
           return;
         }
 
-        container.innerHTML = posts.map(post => `
-          <article class="post-card">
-            <div class="post-header">
-              <h2 class="post-title">${post.title}</h2>
-              <span class="post-date">${post.date}</span>
-            </div>
-
-            ${post.image ? `
-              <div class="post-img-container">
-                <img 
-                  src="${post.image}" 
-                  alt="${post.title}" 
-                  class="post-img"
-                  onerror="this.onerror=null; this.src='/${post.image.replace(/^.*uploads\//, 'images/uploads/')}';"
-                >
+        container.innerHTML = posts.map(post => {
+          const postLink = `?post=${encodeURIComponent(post.slug)}`;
+          return `
+            <article class="post-card clickable-card">
+              <div class="post-header">
+                <a href="${postLink}" target="_blank" class="post-title-link">
+                  <h2 class="post-title">${post.title}</h2>
+                </a>
+                <span class="post-date">${post.date}</span>
               </div>
-            ` : ""}
 
-            <div class="post-body">${post.content}</div>
-          </article>
-        `).join("");
+              ${post.image ? `
+                <a href="${postLink}" target="_blank">
+                  <div class="post-img-container">
+                    <img 
+                      src="${post.image}" 
+                      alt="${post.title}" 
+                      class="post-img"
+                      onerror="this.onerror=null; this.src='/${post.image.replace(/^.*uploads\//, 'images/uploads/')}';"
+                    >
+                  </div>
+                </a>
+              ` : ""}
+
+              <div class="post-body">${marked.parse(post.previewText)}</div>
+
+              <a href="${postLink}" target="_blank" class="read-more-btn">
+                Citește articolul <span>→</span>
+              </a>
+            </article>
+          `;
+        }).join("");
       } catch (err) {
         container.innerHTML = '<div class="empty-state">Eroare la preluarea articolelor din feed.</div>';
       }
     }
 
-    loadPosts();
+    async function loadSinglePost(slug) {
+      const container = document.getElementById("postsContainer");
+      const backContainer = document.getElementById("backContainer");
+
+      // Adaugă butonul de întoarcere la feed
+      backContainer.innerHTML = `
+        <a href="/" class="back-btn">← Înapoi la toate știrile</a>
+      `;
+
+      try {
+        const res = await fetch(`https://raw.githubusercontent.com/${USER}/${REPO}/main/content/posts/${slug}.md`);
+        if (!res.ok) {
+          container.innerHTML = '<div class="empty-state">Articolul nu a fost găsit sau a fost șters.</div>';
+          return;
+        }
+
+        const rawText = await res.text();
+        const { data, content } = parseFrontmatter(rawText);
+        const title = data.title || slug;
+        const date = data.date ? new Date(data.date).toLocaleDateString("ro-RO", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "";
+        const image = resolveImgUrl(data.image);
+
+        // Actualizează titlul tab-ului cu titlul articolului
+        document.title = `${title} - GTA VI Vice Wire`;
+
+        container.innerHTML = `
+          <article class="post-card">
+            <div class="post-header">
+              <h1 class="post-title" style="font-size: 26px;">${title}</h1>
+              <span class="post-date">${date}</span>
+            </div>
+
+            ${image ? `
+              <div class="post-img-container">
+                <img 
+                  src="${image}" 
+                  alt="${title}" 
+                  class="post-img"
+                  onerror="this.onerror=null; this.src='/${image.replace(/^.*uploads\//, 'images/uploads/')}';"
+                >
+              </div>
+            ` : ""}
+
+            <div class="post-body" style="font-size: 15px;">${marked.parse(content)}</div>
+          </article>
+        `;
+      } catch (err) {
+        container.innerHTML = '<div class="empty-state">A apărut o problemă la încărcarea articolului.</div>';
+      }
+    }
+
+    initBlog();
   </script>
 </body>
 </html>
