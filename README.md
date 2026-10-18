@@ -1,0 +1,2 @@
+# grandtheftautovi.tech
+My blog
