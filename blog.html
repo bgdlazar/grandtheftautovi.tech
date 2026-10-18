@@ -185,16 +185,50 @@
       white-space: nowrap;
     }
 
+    /* Corp Articol - Spațiere aerisită */
     .post-body {
-      font-size: 14px;
-      line-height: 1.7;
-      color: #e5e0f5;
+      font-size: 15px;
+      line-height: 1.85;
+      color: #ece8f8;
       margin-bottom: 16px;
+      word-break: break-word;
     }
 
-    .post-body p { margin-bottom: 12px; }
-    .post-body a { color: var(--neon-cyan); }
-    .post-body img { max-width: 100%; border-radius: 8px; margin: 10px 0; }
+    .post-body p {
+      margin-bottom: 22px;
+    }
+
+    .post-body ul, .post-body ol {
+      margin-top: 10px;
+      margin-bottom: 24px;
+      padding-left: 26px;
+    }
+
+    .post-body li {
+      margin-bottom: 12px;
+      line-height: 1.75;
+    }
+
+    .post-body a {
+      color: var(--neon-cyan);
+      text-decoration: underline;
+    }
+
+    .post-body blockquote {
+      border-left: 3px solid var(--neon-pink);
+      padding-left: 16px;
+      margin: 18px 0;
+      color: #ffd6eb;
+      font-style: italic;
+    }
+
+    .post-body h1, .post-body h2, .post-body h3 {
+      font-family: 'Chakra Petch', sans-serif;
+      color: #ffffff;
+      margin-top: 26px;
+      margin-bottom: 14px;
+      letter-spacing: 1px;
+    }
 
     .post-img-container {
       width: 100%;
@@ -203,7 +237,7 @@
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.15);
       background: #000;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
 
     .post-img {
@@ -317,6 +351,12 @@
   <script>
     const USER = "bgdlazar";
     const REPO = "grandtheftautovi.tech";
+
+    // Setări parser Markdown: rupe rândurile la simplu Enter
+    marked.setOptions({
+      breaks: true,
+      gfm: true
+    });
 
     function resolveImgUrl(url) {
       if (!url) return null;
@@ -438,7 +478,7 @@
       const commentsWrapper = document.getElementById("commentsWrapper");
 
       backContainer.innerHTML = `
-        <a href="/" class="back-btn">← Înapoi la toate postarile</a>
+        <a href="/" class="back-btn">← Înapoi la toate știrile</a>
       `;
 
       try {
@@ -474,11 +514,11 @@
               </div>
             ` : ""}
 
-            <div class="post-body" style="font-size: 15px;">${marked.parse(content)}</div>
+            <div class="post-body">${marked.parse(content)}</div>
           </article>
         `;
 
-        // Inserare widget de comentarii Giscus
+        // Secțiunea Giscus
         commentsWrapper.innerHTML = `
           <div class="comments-card">
             <div class="comments-header">COMENTARII // DISCUȚII</div>
@@ -489,7 +529,7 @@
         const script = document.createElement("script");
         script.src = "https://giscus.app/client.js";
         script.setAttribute("data-repo", `${USER}/${REPO}`);
-        script.setAttribute("data-repo-id", ""); // Se autodetectează sau se mapează prin slug
+        script.setAttribute("data-repo-id", "");
         script.setAttribute("data-category", "General");
         script.setAttribute("data-category-id", "");
         script.setAttribute("data-mapping", "specific");
