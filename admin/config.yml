@@ -2,7 +2,8 @@ backend:
   name: github
   repo: bgdlazar/grandtheftautovi.tech
   branch: main
-  base_url: https://api.sveltia.cc
+  base_url: https://grandtheftautovi.tech
+  auth_endpoint: /auth
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
