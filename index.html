@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GTA VI - Countdown Romania</title>
+  <title>GTA VI - Countdown</title>
 
-  <!-- Favicon PNG forțat împotriva cache-ului -->
   <link rel="icon" type="image/png" href="favicon.png?v=3">
   <link rel="shortcut icon" type="image/png" href="favicon.png?v=3">
-  
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=Montserrat:wght@700;900&family=Orbitron:wght@800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=Montserrat:wght@400;600;800;900&family=Orbitron:wght@800;900&display=swap" rel="stylesheet">
 
   <style>
     :root {
       --neon-pink: #ff2d87;
-      --card-bg: rgba(18, 12, 38, 0.55);
-      --border-glow: rgba(255, 255, 255, 0.35);
+      --neon-cyan: #00e5ff;
+      --card-bg: rgba(18, 12, 38, 0.65);
+      --border-glow: rgba(255, 255, 255, 0.3);
     }
 
     * {
@@ -31,24 +31,24 @@
       color: #ffffff;
       font-family: 'Montserrat', sans-serif;
       min-height: 100vh;
+      overflow-x: hidden;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      overflow-x: hidden;
       position: relative;
+      padding: 20px;
     }
 
-    /* Fundalul Cocoteo cu palmieri */
     .bg-layer {
       position: fixed;
       inset: 0;
       background-image: 
-        radial-gradient(ellipse at center, rgba(12, 8, 23, 0.1) 0%, rgba(12, 8, 23, 0.65) 100%),
+        radial-gradient(ellipse at center, rgba(12, 8, 23, 0.2) 0%, rgba(12, 8, 23, 0.75) 100%),
         url('cocoteo-background.0~6dq9w0~ac7f.avif'),
         url('https://i.ibb.co/G4NHb1st/cocoteo-background-0-6dq9w0-ac7f.avif');
       background-size: cover;
-      background-position: center center;
-      background-repeat: no-repeat;
+      background-position: center;
       z-index: -2;
       filter: saturate(1.15) contrast(1.05);
     }
@@ -60,318 +60,193 @@
       background-size: 100% 4px;
       z-index: -1;
       pointer-events: none;
-      opacity: 0.5;
+      opacity: 0.45;
     }
 
-    /* Widget Live Timișoara & Romania Clock (Vice City HUD) */
-    .vice-hud {
-      position: absolute;
-      top: 18px;
+    /* Buton Neon Vice City către Blog */
+    .vice-blog-pill {
+      position: fixed;
+      top: 22px;
       right: 22px;
-      display: flex;
+      z-index: 100;
+      display: inline-flex;
       align-items: center;
-      gap: 14px;
-      background: rgba(18, 12, 38, 0.65);
-      border: 1px solid rgba(0, 229, 255, 0.35);
+      gap: 10px;
+      padding: 10px 20px;
+      background: rgba(18, 12, 38, 0.7);
+      border: 1px solid rgba(255, 45, 135, 0.45);
+      border-radius: 999px;
+      text-decoration: none;
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      padding: 8px 18px;
-      border-radius: 50px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(0, 229, 255, 0.15);
-      z-index: 10;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 45, 135, 0.2);
+      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+      user-select: none;
     }
 
-    .hud-block {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      line-height: 1.15;
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ff2d87;
+      box-shadow: 0 0 10px #ff2d87, 0 0 16px #ff2d87;
+      animation: vicePulse 1.8s infinite ease-in-out;
     }
 
-    .hud-title {
+    @keyframes vicePulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.35);
+        opacity: 0.5;
+      }
+    }
+
+    .pill-tag {
+      font-family: 'Orbitron', monospace, sans-serif;
       font-size: 9px;
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: #9eefff;
+      color: #00e5ff;
+      background: rgba(0, 229, 255, 0.12);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      padding: 2px 7px;
+      border-radius: 6px;
     }
 
-    .hud-value {
-      font-family: 'Orbitron', monospace;
-      font-size: 14px;
+    .pill-text {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
       font-weight: 800;
+      letter-spacing: 1.8px;
       color: #ffffff;
-      text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
-      font-variant-numeric: tabular-nums;
+      text-transform: uppercase;
     }
 
-    .hud-divider {
-      width: 1px;
-      height: 22px;
-      background: rgba(255, 255, 255, 0.2);
+    .pill-arrow {
+      color: #ff2d87;
+      font-size: 14px;
+      font-weight: 900;
+      transition: transform 0.2s ease;
     }
 
-    main {
-      width: 100%;
-      max-width: 960px;
-      padding: 50px 20px 30px;
+    .vice-blog-pill:hover {
+      background: rgba(28, 16, 56, 0.9);
+      border-color: #00e5ff;
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 229, 255, 0.45);
+      transform: translateY(-2px);
+    }
+
+    .vice-blog-pill:hover .pill-arrow {
+      color: #00e5ff;
+      transform: translateX(4px);
+    }
+
+    /* Container Central */
+    .container {
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      z-index: 5;
+      max-width: 900px;
+      width: 100%;
+      z-index: 1;
     }
 
     .logo-container {
       margin-bottom: 25px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 160px;
+      position: relative;
     }
 
-    .gta-vi-logo {
+    .logo-img {
+      max-width: 240px;
       width: 100%;
-      max-width: 480px;
       height: auto;
-      display: block;
-      filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 35px rgba(255, 45, 135, 0.5));
-      animation: floatEffect 6s ease-in-out infinite;
+      filter: drop-shadow(0 0 25px rgba(255, 45, 135, 0.6));
     }
 
-    @keyframes floatEffect {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-7px); }
-    }
-
-    /* Badge Lansare */
-    .release-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.45);
-      padding: 9px 28px;
-      border-radius: 50px;
+    .tagline {
+      font-family: 'Orbitron', monospace;
       font-size: 13px;
       font-weight: 800;
-      letter-spacing: 3px;
+      letter-spacing: 4px;
+      color: var(--neon-cyan);
       text-transform: uppercase;
-      color: #fff;
-      margin-bottom: 35px;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 255, 255, 0.2);
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
     }
 
-    .release-badge span {
-      color: #ffde59;
-      font-weight: 900;
-    }
-
-    /* Grila principală (Lansare) */
-    .countdown-grid {
+    /* Grila Timer */
+    .timer-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
+      gap: 16px;
       width: 100%;
-      max-width: 860px;
-      margin-bottom: 22px;
+      max-width: 720px;
     }
 
-    .countdown-card {
+    .timer-card {
       background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border-glow);
-      border-radius: 18px;
-      padding: 28px 12px;
+      border-radius: 16px;
+      padding: 24px 10px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
       position: relative;
       overflow: hidden;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45), inset 0 0 20px rgba(255, 255, 255, 0.08);
-      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .countdown-card::before {
+    .timer-card::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #ff2d87, #c054ff, #00e5ff);
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #ff2d87, #00e5ff);
     }
 
-    .countdown-card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(255, 255, 255, 0.85);
-      box-shadow: 0 16px 40px rgba(255, 45, 135, 0.35), inset 0 0 25px rgba(255, 255, 255, 0.15);
-    }
-
-    .card-value {
-      font-family: 'Orbitron', monospace;
-      font-size: clamp(38px, 6vw, 68px);
-      font-weight: 900;
+    .timer-num {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 54px;
+      font-weight: 700;
       line-height: 1;
-      margin-bottom: 10px;
-      background: linear-gradient(180deg, #ffffff 45%, #ffd6eb 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .card-label {
-      font-family: 'Chakra Petch', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: #ffc4e1;
-    }
-
-    /* Countdown Pre-load */
-    .preload-section {
-      width: 100%;
-      max-width: 640px;
-      background: rgba(14, 10, 30, 0.62);
-      border: 1px solid rgba(0, 229, 255, 0.35);
-      border-radius: 12px;
-      padding: 9px 20px;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      white-space: nowrap;
-    }
-
-    .preload-label {
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
       color: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .preload-label span {
-      color: #00e5ff;
-    }
-
-    .preload-grid {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-    }
-
-    .preload-item {
-      display: flex;
-      align-items: baseline;
-      gap: 2px;
-    }
-
-    .preload-val {
-      font-family: 'Orbitron', monospace;
-      font-size: 16px;
-      font-weight: 800;
-      color: #ffffff;
-      text-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
-      font-variant-numeric: tabular-nums;
-      display: inline-block;
-      min-width: 18px;
-      text-align: right;
-    }
-
-    .preload-lbl {
-      font-family: 'Chakra Petch', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      color: #9eefff;
-      text-transform: uppercase;
-    }
-
-    .preload-separator {
-      color: rgba(255, 255, 255, 0.3);
-      font-size: 13px;
-    }
-
-    /* Bara Procent */
-    .progress-section {
-      width: 100%;
-      max-width: 860px;
-    }
-
-    .progress-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: #ffd6eb;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
       margin-bottom: 8px;
     }
 
-    .progress-track {
-      width: 100%;
-      height: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(8px);
+    .timer-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: uppercase;
     }
 
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #ff2d87, #c054ff, #00e5ff);
-      border-radius: 20px;
-      box-shadow: 0 0 12px rgba(255, 45, 135, 0.7);
-      transition: width 0.5s ease;
-    }
-
-    @media (max-width: 768px) {
-      .vice-hud {
-        position: static;
-        margin-bottom: 20px;
+    @media (max-width: 600px) {
+      .vice-blog-pill {
+        top: 14px;
+        right: 14px;
+        padding: 8px 14px;
+        gap: 7px;
       }
-      main {
-        padding: 20px;
+      .pill-tag {
+        display: none;
       }
-      .countdown-grid {
+      .pill-text {
+        font-size: 10px;
+        letter-spacing: 1px;
+      }
+      .timer-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
       }
-      .gta-vi-logo {
-        max-width: 280px;
+      .timer-num {
+        font-size: 42px;
       }
-      .countdown-card {
-        padding: 20px 8px;
-      }
-      .release-badge {
-        font-size: 11px;
-        letter-spacing: 2px;
-        padding: 7px 18px;
-        margin-bottom: 25px;
-      }
-      .preload-section {
-        flex-direction: column;
-        gap: 8px;
-        padding: 10px 14px;
-        text-align: center;
-        white-space: normal;
-      }
-      .progress-info {
-        font-size: 9px;
-        letter-spacing: 1px;
+      .logo-img {
+        max-width: 190px;
       }
     }
   </style>
@@ -381,211 +256,70 @@
   <div class="bg-layer"></div>
   <div class="scanlines"></div>
 
-  <!-- HUD Vice City: Ora Ro & Vremea Timișoara -->
-  <aside class="vice-hud">
-    <div class="hud-block">
-      <span class="hud-title">ROMÂNIA</span>
-      <span class="hud-value" id="romaniaTime">--:--:--</span>
-    </div>
-    <div class="hud-divider"></div>
-    <div class="hud-block">
-      <span class="hud-title">TIMIȘOARA</span>
-      <span class="hud-value" id="timisoaraWeather">...</span>
-    </div>
-  </aside>
+  <!-- Buton navigare către blog -->
+  <a href="https://blog.grandtheftautovi.tech" class="vice-blog-pill" target="_self">
+    <span class="pill-dot"></span>
+    <span class="pill-tag">DISPATCH</span>
+    <span class="pill-text">VICE WIRE BLOG</span>
+    <span class="pill-arrow">→</span>
+  </a>
 
-  <main>
+  <div class="container">
     <div class="logo-container">
-      <img 
-        src="vi.0hxa9~pf214xe.avif" 
-        alt="GTA VI Official Color Logo" 
-        class="gta-vi-logo"
-        onerror="this.onerror=null; this.src='https://i.ibb.co/Ld2pfFx9/vi-0hxa9-pf214xe.avif';"
-      />
+      <img src="vi.0hxa9~pf214xe.avif" alt="GTA VI Logo" class="logo-img" onerror="this.src='https://i.ibb.co/6R228x0M/vi-0hxa9-pf214xe.avif'">
     </div>
 
-    <!-- Badge Lansare -->
-    <div class="release-badge">
-      Lansare: <span>19 Noiembrie 2026</span> • Ora 00:00:00 (România)
-    </div>
+    <div class="tagline">COMING 2026 // COUNTDOWN TO VICE CITY</div>
 
-    <!-- Countdown Principal -->
-    <div class="countdown-grid">
-      <div class="countdown-card">
-        <div class="card-value" id="days">0</div>
-        <div class="card-label">Zile</div>
+    <div class="timer-grid">
+      <div class="timer-card">
+        <div class="timer-num" id="days">--</div>
+        <div class="timer-label">Zile</div>
       </div>
-      <div class="countdown-card">
-        <div class="card-value" id="hours">00</div>
-        <div class="card-label">Ore</div>
+      <div class="timer-card">
+        <div class="timer-num" id="hours">--</div>
+        <div class="timer-label">Ore</div>
       </div>
-      <div class="countdown-card">
-        <div class="card-value" id="minutes">00</div>
-        <div class="card-label">Minute</div>
+      <div class="timer-card">
+        <div class="timer-num" id="minutes">--</div>
+        <div class="timer-label">Minute</div>
       </div>
-      <div class="countdown-card">
-        <div class="card-value" id="seconds">00</div>
-        <div class="card-label">Secunde</div>
-      </div>
-    </div>
-
-    <!-- Countdown Preload -->
-    <div class="preload-section">
-      <div class="preload-label">
-        Preload: <span>12 Noiembrie 2026</span> • Ora 00:00:00
-      </div>
-      <div class="preload-grid" id="preloadGrid">
-        <div class="preload-item">
-          <span class="preload-val" id="pDays">0</span>
-          <span class="preload-lbl">z</span>
-        </div>
-        <span class="preload-separator">:</span>
-        <div class="preload-item">
-          <span class="preload-val" id="pHours">00</span>
-          <span class="preload-lbl">h</span>
-        </div>
-        <span class="preload-separator">:</span>
-        <div class="preload-item">
-          <span class="preload-val" id="pMinutes">00</span>
-          <span class="preload-lbl">m</span>
-        </div>
-        <span class="preload-separator">:</span>
-        <div class="preload-item">
-          <span class="preload-val" id="pSeconds">00</span>
-          <span class="preload-lbl">s</span>
-        </div>
+      <div class="timer-card">
+        <div class="timer-num" id="seconds">--</div>
+        <div class="timer-label">Secunde</div>
       </div>
     </div>
-
-    <!-- Bara Procent -->
-    <div class="progress-section">
-      <div class="progress-info">
-        <span>De la anunțarea lui din decembrie 2023 s-a scurs:</span>
-        <span id="progressText">0%</span>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" id="progressBar"></div>
-      </div>
-    </div>
-  </main>
+  </div>
 
   <script>
-    // Live Clock România (Europe/Bucharest)
-    const romaniaTimeEl = document.getElementById("romaniaTime");
-    function updateRomaniaClock() {
-      const options = {
-        timeZone: "Europe/Bucharest",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false
-      };
-      romaniaTimeEl.textContent = new Intl.DateTimeFormat("ro-RO", options).format(new Date());
-    }
-    setInterval(updateRomaniaClock, 1000);
-    updateRomaniaClock();
+    // Data țintă: Toamna 2026 (17 Septembrie 2026)
+    const targetDate = new Date("September 17, 2026 00:00:00").getTime();
 
-    // Vreme Live Timișoara (Open-Meteo, gratuit & direct)
-    const timisoaraWeatherEl = document.getElementById("timisoaraWeather");
-    function fetchTimisoaraWeather() {
-      const url = "https://api.open-meteo.com/v1/forecast?latitude=45.7537&longitude=21.2257&current=temperature_2m,weather_code&timezone=Europe%2FBucharest";
-      
-      fetch(url)
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.current) {
-            const temp = Math.round(data.current.temperature_2m);
-            const code = data.current.weather_code;
-            let icon = "☀️";
-            if (code >= 1 && code <= 3) icon = "⛅";
-            else if (code >= 45 && code <= 48) icon = "🌫️";
-            else if (code >= 51 && code <= 67) icon = "🌧️";
-            else if (code >= 71 && code <= 77) icon = "❄️";
-            else if (code >= 80 && code <= 82) icon = "🌦️";
-            else if (code >= 95) icon = "⛈️";
-
-            timisoaraWeatherEl.textContent = `${icon} ${temp}°C`;
-          }
-        })
-        .catch(() => {
-          timisoaraWeatherEl.textContent = "⛅ --°C";
-        });
-    }
-
-    fetchTimisoaraWeather();
-    // Actualizare vreme la fiecare 15 minute
-    setInterval(fetchTimisoaraWeather, 15 * 60 * 1000);
-
-    // Countdown logic
-    const startDate = new Date("2023-12-04T00:00:00+02:00").getTime();
-    const targetDate = new Date("2026-11-19T00:00:00+02:00").getTime();
-    const preloadDate = new Date("2026-11-12T00:00:00+02:00").getTime();
-
-    const daysEl = document.getElementById("days");
-    const hoursEl = document.getElementById("hours");
-    const minutesEl = document.getElementById("minutes");
-    const secondsEl = document.getElementById("seconds");
-
-    const pDaysEl = document.getElementById("pDays");
-    const pHoursEl = document.getElementById("pHours");
-    const pMinutesEl = document.getElementById("pMinutes");
-    const pSecondsEl = document.getElementById("pSeconds");
-
-    const progressBar = document.getElementById("progressBar");
-    const progressText = document.getElementById("progressText");
-
-    function updateCountdowns() {
+    function updateCountdown() {
       const now = new Date().getTime();
+      const difference = targetDate - now;
 
-      // Lansare
-      const distance = targetDate - now;
-      if (distance <= 0) {
-        daysEl.textContent = "0";
-        hoursEl.textContent = "00";
-        minutesEl.textContent = "00";
-        secondsEl.textContent = "00";
-        document.querySelector(".release-badge").innerHTML = "<span>GTA VI A FOST LANSAT!</span>";
-        progressBar.style.width = "100%";
-        progressText.textContent = "100%";
-      } else {
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        daysEl.textContent = String(days);
-        hoursEl.textContent = String(hours).padStart(2, '0');
-        minutesEl.textContent = String(minutes).padStart(2, '0');
-        secondsEl.textContent = String(seconds).padStart(2, '0');
-
-        const totalDuration = targetDate - startDate;
-        const elapsed = now - startDate;
-        const percent = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100)).toFixed(1);
-        progressBar.style.width = percent + "%";
-        progressText.textContent = percent + "%";
+      if (difference <= 0) {
+        document.getElementById("days").innerText = "00";
+        document.getElementById("hours").innerText = "00";
+        document.getElementById("minutes").innerText = "00";
+        document.getElementById("seconds").innerText = "00";
+        return;
       }
 
-      // Preload
-      const pDistance = preloadDate - now;
-      if (pDistance <= 0) {
-        document.getElementById("preloadGrid").innerHTML = `
-          <span style="color: #00e5ff; font-weight: 800; font-size: 13px;">DISPONIBIL ACUM!</span>
-        `;
-      } else {
-        const pDays = Math.floor(pDistance / (1000 * 60 * 60 * 24));
-        const pHours = Math.floor((pDistance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const pMinutes = Math.floor((pDistance % (1000 * 60 * 60)) / (1000 * 60));
-        const pSeconds = Math.floor((pDistance % (1000 * 60)) / 1000);
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-        pDaysEl.textContent = String(pDays);
-        pHoursEl.textContent = String(pHours).padStart(2, '0');
-        pMinutesEl.textContent = String(pMinutes).padStart(2, '0');
-        pSecondsEl.textContent = String(pSeconds).padStart(2, '0');
-      }
+      document.getElementById("days").innerText = String(days).padStart(2, '0');
+      document.getElementById("hours").innerText = String(hours).padStart(2, '0');
+      document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
+      document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
     }
 
-    setInterval(updateCountdowns, 1000);
-    updateCountdowns();
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
   </script>
 </body>
 </html>
