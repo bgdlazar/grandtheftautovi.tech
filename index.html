@@ -450,7 +450,7 @@
   <!-- Buton Navigare Blog (Stânga-Sus) -->
   <a href="https://blog.grandtheftautovi.tech" class="vice-blog-btn" target="_self">
     <span class="blog-dot"></span>
-    <span class="blog-text">BLOG</span>
+    <span class="blog-text">VICE BLOG</span>
     <span class="blog-arrow">→</span>
   </a>
 
@@ -558,10 +558,11 @@
     setInterval(updateRomaniaClock, 1000);
     updateRomaniaClock();
 
-    // Vreme Live Timișoara (Open-Meteo, gratuit & direct)
+    // Vreme Live Timișoara (Iconițe dinamice zi/noapte & condiții meteo)
     const timisoaraWeatherEl = document.getElementById("timisoaraWeather");
     function fetchTimisoaraWeather() {
-      const url = "https://api.open-meteo.com/v1/forecast?latitude=45.7537&longitude=21.2257&current=temperature_2m,weather_code&timezone=Europe%2FBucharest";
+      // Solicităm temperatura, codul meteo și starea de zi/noapte (is_day)
+      const url = "https://api.open-meteo.com/v1/forecast?latitude=45.7537&longitude=21.2257&current=temperature_2m,weather_code,is_day&timezone=Europe%2FBucharest";
       
       fetch(url)
         .then(res => res.json())
@@ -569,19 +570,38 @@
           if (data && data.current) {
             const temp = Math.round(data.current.temperature_2m);
             const code = data.current.weather_code;
-            let icon = "☀️";
-            if (code >= 1 && code <= 3) icon = "⛅";
-            else if (code >= 45 && code <= 48) icon = "🌫️";
-            else if (code >= 51 && code <= 67) icon = "🌧️";
-            else if (code >= 71 && code <= 77) icon = "❄️";
-            else if (code >= 80 && code <= 82) icon = "🌦️";
-            else if (code >= 95) icon = "⛈️";
+            const isDay = data.current.is_day === 1;
+
+            let icon = isDay ? "☀️" : "🌙";
+
+            if (code === 0) {
+              // Senin complet
+              icon = isDay ? "☀️" : "🌙";
+            } else if (code === 1 || code === 2) {
+              // Parțial înnorat
+              icon = isDay ? "🌤️" : "☁️";
+            } else if (code === 3) {
+              // Înnorat complet
+              icon = "☁️";
+            } else if (code >= 45 && code <= 48) {
+              // Ceață
+              icon = "🌫️";
+            } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
+              // Burniță / Ploaie / Averse
+              icon = "🌧️";
+            } else if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) {
+              // Ninsoare
+              icon = "❄️";
+            } else if (code >= 95) {
+              // Furtună cu descărcări electrice
+              icon = "⛈️";
+            }
 
             timisoaraWeatherEl.textContent = `${icon} ${temp}°C`;
           }
         })
         .catch(() => {
-          timisoaraWeatherEl.textContent = "⛅ --°C";
+          timisoaraWeatherEl.textContent = "🌙 --°C";
         });
     }
 
