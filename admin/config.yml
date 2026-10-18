@@ -1,0 +1,19 @@
+backend:
+  name: github
+  repo: bogdan/gta6-countdown-site
+  branch: main
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "blog"
+    label: "Articole Blog"
+    folder: "content/posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Titlu", name: "title", widget: "string" }
+      - { label: "Data", name: "date", widget: "datetime" }
+      - { label: "Imagine", name: "image", widget: "image", required: false }
+      - { label: "Conținut", name: "body", widget: "markdown" }
