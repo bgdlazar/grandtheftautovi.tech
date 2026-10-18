@@ -219,6 +219,16 @@
     const USER = "bgdlazar";
     const REPO = "grandtheftautovi.tech";
 
+    // Normalizare URL imagine pentru a funcționa indiferent de cum o salvează CMS-ul
+    function resolveImgUrl(url) {
+      if (!url) return null;
+      url = url.trim().replace(/^['"]|['"]$/g, '');
+      if (url.startsWith("http://") || url.startsWith("https://")) {
+        return url;
+      }
+      return url.startsWith("/") ? url : "/" + url;
+    }
+
     function parseFrontmatter(text) {
       const match = text.match(/^---([\s\S]*?)---([\s\S]*)$/);
       if (!match) return { data: {}, content: text };
@@ -230,7 +240,7 @@
         if (parts.length >= 2) {
           const key = parts[0].trim();
           let value = parts.slice(1).join(":").trim();
-          if (value.startsWith('"') && value.endsWith('"')) {
+          if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
             value = value.slice(1, -1);
           }
           data[key] = value;
@@ -256,11 +266,12 @@
             const rawRes = await fetch(file.download_url);
             const rawText = await rawRes.text();
             const { data, content } = parseFrontmatter(rawText);
+
             return {
               title: data.title || file.name.replace(".md", ""),
               date: data.date ? new Date(data.date).toLocaleDateString("ro-RO", { day: "2-digit", month: "short", year: "numeric" }) : "",
               rawDate: data.date ? new Date(data.date).getTime() : 0,
-              image: data.image || null,
+              image: resolveImgUrl(data.image),
               content: marked.parse(content)
             };
           });
@@ -282,7 +293,7 @@
 
             ${post.image ? `
               <div class="post-img-container">
-                <img src="${post.image}" alt="Post Image" class="post-img">
+                <img src="${post.image}" alt="${post.title}" class="post-img" onerror="this.parentElement.style.display='none'">
               </div>
             ` : ""}
 
