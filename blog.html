@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GTA VI - Vice City Wire (Blog)</title>
+  <title>GTA VI - Blogul Romanesc</title>
 
   <link rel="icon" type="image/png" href="favicon.png?v=3">
   <link rel="shortcut icon" type="image/png" href="favicon.png?v=3">
@@ -142,7 +142,6 @@
       background: linear-gradient(90deg, #ff2d87, #c054ff, #00e5ff);
     }
 
-    /* Efect de hover pe card în feed */
     .post-card.clickable-card:hover {
       transform: translateY(-4px);
       border-color: rgba(0, 229, 255, 0.6);
@@ -215,7 +214,6 @@
       object-fit: cover;
     }
 
-    /* Buton Citește Articolul în alt tab */
     .read-more-btn {
       align-self: flex-start;
       display: inline-flex;
@@ -242,7 +240,6 @@
       transform: translateX(4px);
     }
 
-    /* Buton Înapoi când e deschis un singur articol */
     .back-btn {
       display: inline-flex;
       align-items: center;
@@ -265,6 +262,29 @@
       border-color: var(--neon-cyan);
       color: var(--neon-cyan);
       box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+    }
+
+    /* Container Comentarii */
+    .comments-card {
+      margin-top: 30px;
+      background: var(--card-bg);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--border-glow);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .comments-header {
+      font-family: 'Orbitron', monospace;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: var(--neon-cyan);
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 8px;
     }
 
     .empty-state {
@@ -291,6 +311,7 @@
     <div class="posts-feed" id="postsContainer">
       <div class="empty-state">Se încarcă articolele...</div>
     </div>
+    <div id="commentsWrapper"></div>
   </main>
 
   <script>
@@ -333,10 +354,8 @@
       const postSlug = urlParams.get("post");
 
       if (postSlug) {
-        // Mod vizualizare: Un singur articol
         loadSinglePost(postSlug);
       } else {
-        // Mod vizualizare: Feed complet cu toate articolele
         loadAllPosts();
       }
     }
@@ -364,7 +383,6 @@
               date: data.date ? new Date(data.date).toLocaleDateString("ro-RO", { day: "2-digit", month: "short", year: "numeric" }) : "",
               rawDate: data.date ? new Date(data.date).getTime() : 0,
               image: resolveImgUrl(data.image),
-              // Previzualizare primelor 200 de caractere în feed
               previewText: content.length > 220 ? content.slice(0, 220) + "..." : content
             };
           });
@@ -417,10 +435,10 @@
     async function loadSinglePost(slug) {
       const container = document.getElementById("postsContainer");
       const backContainer = document.getElementById("backContainer");
+      const commentsWrapper = document.getElementById("commentsWrapper");
 
-      // Adaugă butonul de întoarcere la feed
       backContainer.innerHTML = `
-        <a href="/" class="back-btn">← Înapoi la toate știrile</a>
+        <a href="/" class="back-btn">← Înapoi la toate postarile</a>
       `;
 
       try {
@@ -436,7 +454,6 @@
         const date = data.date ? new Date(data.date).toLocaleDateString("ro-RO", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "";
         const image = resolveImgUrl(data.image);
 
-        // Actualizează titlul tab-ului cu titlul articolului
         document.title = `${title} - GTA VI Vice Wire`;
 
         container.innerHTML = `
@@ -460,6 +477,34 @@
             <div class="post-body" style="font-size: 15px;">${marked.parse(content)}</div>
           </article>
         `;
+
+        // Inserare widget de comentarii Giscus
+        commentsWrapper.innerHTML = `
+          <div class="comments-card">
+            <div class="comments-header">COMENTARII // DISCUȚII</div>
+            <div id="giscusContainer"></div>
+          </div>
+        `;
+
+        const script = document.createElement("script");
+        script.src = "https://giscus.app/client.js";
+        script.setAttribute("data-repo", `${USER}/${REPO}`);
+        script.setAttribute("data-repo-id", ""); // Se autodetectează sau se mapează prin slug
+        script.setAttribute("data-category", "General");
+        script.setAttribute("data-category-id", "");
+        script.setAttribute("data-mapping", "specific");
+        script.setAttribute("data-term", slug);
+        script.setAttribute("data-strict", "0");
+        script.setAttribute("data-reactions-enabled", "1");
+        script.setAttribute("data-emit-metadata", "0");
+        script.setAttribute("data-input-position", "top");
+        script.setAttribute("data-theme", "dark_dimmed");
+        script.setAttribute("data-lang", "ro");
+        script.crossOrigin = "anonymous";
+        script.async = true;
+
+        document.getElementById("giscusContainer").appendChild(script);
+
       } catch (err) {
         container.innerHTML = '<div class="empty-state">A apărut o problemă la încărcarea articolului.</div>';
       }
