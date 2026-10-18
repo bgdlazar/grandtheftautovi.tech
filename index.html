@@ -63,7 +63,7 @@
       opacity: 0.45;
     }
 
-    /* Buton Neon Vice City către Blog */
+    /* Buton Navigare Blog */
     .vice-blog-pill {
       position: fixed;
       top: 22px;
@@ -72,14 +72,14 @@
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      padding: 10px 20px;
-      background: rgba(18, 12, 38, 0.7);
-      border: 1px solid rgba(255, 45, 135, 0.45);
+      padding: 9px 18px;
+      background: rgba(18, 12, 38, 0.75);
+      border: 1px solid rgba(255, 45, 135, 0.5);
       border-radius: 999px;
       text-decoration: none;
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 45, 135, 0.2);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 45, 135, 0.25);
       transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
       user-select: none;
     }
@@ -89,23 +89,17 @@
       height: 8px;
       border-radius: 50%;
       background: #ff2d87;
-      box-shadow: 0 0 10px #ff2d87, 0 0 16px #ff2d87;
+      box-shadow: 0 0 10px #ff2d87;
       animation: vicePulse 1.8s infinite ease-in-out;
     }
 
     @keyframes vicePulse {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-      50% {
-        transform: scale(1.35);
-        opacity: 0.5;
-      }
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.35); opacity: 0.5; }
     }
 
     .pill-tag {
-      font-family: 'Orbitron', monospace, sans-serif;
+      font-family: 'Orbitron', monospace;
       font-size: 9px;
       font-weight: 900;
       letter-spacing: 1.5px;
@@ -133,7 +127,7 @@
     }
 
     .vice-blog-pill:hover {
-      background: rgba(28, 16, 56, 0.9);
+      background: rgba(28, 16, 56, 0.95);
       border-color: #00e5ff;
       box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 229, 255, 0.45);
       transform: translateY(-2px);
@@ -144,7 +138,47 @@
       transform: translateX(4px);
     }
 
-    /* Container Central */
+    /* Widget-uri Superioare (Ora României & Vremea Timișoara) */
+    .top-widgets {
+      position: fixed;
+      top: 22px;
+      left: 22px;
+      display: flex;
+      gap: 12px;
+      z-index: 100;
+    }
+
+    .info-card {
+      background: rgba(18, 12, 38, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50px;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .info-label {
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      color: var(--neon-cyan);
+      font-family: 'Orbitron', monospace;
+      text-transform: uppercase;
+    }
+
+    .info-value {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 1px;
+    }
+
+    /* Zona Centrală */
     .container {
       display: flex;
       flex-direction: column;
@@ -153,11 +187,11 @@
       max-width: 900px;
       width: 100%;
       z-index: 1;
+      margin-top: 40px;
     }
 
     .logo-container {
-      margin-bottom: 25px;
-      position: relative;
+      margin-bottom: 20px;
     }
 
     .logo-img {
@@ -224,19 +258,23 @@
       text-transform: uppercase;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 820px) {
+      .top-widgets {
+        position: static;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
       .vice-blog-pill {
         top: 14px;
         right: 14px;
-        padding: 8px 14px;
-        gap: 7px;
+        padding: 7px 14px;
       }
       .pill-tag {
         display: none;
       }
       .pill-text {
         font-size: 10px;
-        letter-spacing: 1px;
       }
       .timer-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -248,6 +286,9 @@
       .logo-img {
         max-width: 190px;
       }
+      .container {
+        margin-top: 10px;
+      }
     }
   </style>
 </head>
@@ -256,7 +297,19 @@
   <div class="bg-layer"></div>
   <div class="scanlines"></div>
 
-  <!-- Buton navigare către blog -->
+  <!-- Widget-uri Stânga: Ora României & Vremea Timișoara -->
+  <div class="top-widgets">
+    <div class="info-card">
+      <span class="info-label">RO TIME</span>
+      <span class="info-value" id="roTime">--:--:--</span>
+    </div>
+    <div class="info-card">
+      <span class="info-label">TIMIȘOARA</span>
+      <span class="info-value" id="timisoaraWeather">Se încarcă...</span>
+    </div>
+  </div>
+
+  <!-- Buton Dreapta: Navigare către Blog -->
   <a href="https://blog.grandtheftautovi.tech" class="vice-blog-pill" target="_self">
     <span class="pill-dot"></span>
     <span class="pill-tag">DISPATCH</span>
@@ -264,6 +317,7 @@
     <span class="pill-arrow">→</span>
   </a>
 
+  <!-- Containerul Central -->
   <div class="container">
     <div class="logo-container">
       <img src="vi.0hxa9~pf214xe.avif" alt="GTA VI Logo" class="logo-img" onerror="this.src='https://i.ibb.co/6R228x0M/vi-0hxa9-pf214xe.avif'">
@@ -292,7 +346,7 @@
   </div>
 
   <script>
-    // Data țintă: Toamna 2026 (17 Septembrie 2026)
+    // 1. Countdown GTA VI (Toamna 2026 - 17 Septembrie 2026)
     const targetDate = new Date("September 17, 2026 00:00:00").getTime();
 
     function updateCountdown() {
@@ -318,8 +372,35 @@
       document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
     }
 
+    // 2. Ora României (Actualizare la secundă)
+    function updateRoTime() {
+      const options = { timeZone: "Europe/Bucharest", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false };
+      const formatter = new Intl.DateTimeFormat([], options);
+      document.getElementById("roTime").innerText = formatter.format(new Date());
+    }
+
+    // 3. Vremea în Timișoara (Live via Open-Meteo)
+    async function loadWeather() {
+      try {
+        const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=45.7537&longitude=21.2257&current_weather=true");
+        const data = await res.json();
+        if (data && data.current_weather) {
+          const temp = Math.round(data.current_weather.temperature);
+          document.getElementById("timisoaraWeather").innerText = `${temp}°C`;
+        }
+      } catch (e) {
+        document.getElementById("timisoaraWeather").innerText = "--°C";
+      }
+    }
+
     updateCountdown();
     setInterval(updateCountdown, 1000);
+
+    updateRoTime();
+    setInterval(updateRoTime, 1000);
+
+    loadWeather();
+    setInterval(loadWeather, 600000); // refresh vreme la fiecare 10 minute
   </script>
 </body>
 </html>
